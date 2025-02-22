@@ -8,10 +8,10 @@ import cldLib as cld
 
 
 # Création de la matrice de transformation
-wMo = cld.homogeneousMatrix(1, 0, 0, 45, 30, 60)  # Ex. rotation + translation
+wMo = cld.homogeneousMatrix(1, 0, 0, 0, 0, 40)  # Ex. rotation + translation
 
 # ---- on definiti la vitesse de commande dans le repere du robot----#
-v0=np.array([1.0,0.4,0.0])
+v0=np.array([0.5,0.0,0.0])
 w0=np.array([0.0,0.0,0.2])
 
 # --- on deduit le deplacement du robot si on applique cette vitesse  pendant dt secondes---#
@@ -35,7 +35,7 @@ xmax = xlim
 ymin = -xlim
 ymax = xlim
 
-for i in range(10):
+for i in range(100):
 
    # on est a la position wMo
    # on repere la distance a laquelle on est des limites
@@ -54,7 +54,7 @@ for i in range(10):
    ovpot = oVw @ wvpot
    
    # on ajoute la vitesse de commande
-   vrobot = v - ovpot[0:3]
+   vrobot = v + ovpot[0:3]
 
    print('v', v) 
    print('wvpot', wvpot)
@@ -62,8 +62,8 @@ for i in range(10):
    print('vrobot', vrobot)
    
 
-   o2Mo = cld.homogeneous_from_twist(w, vrobot, dt)
-   wMo = wMo @np.linalg.inv(o2Mo)
+   oMo2 = cld.homogeneous_from_twist(w, vrobot, dt)
+   wMo = wMo @oMo2
    cld.frame(wMo, 1,ax )
 
 
@@ -103,4 +103,7 @@ ax.set_zlabel("Potentiel")
 ax.set_title("Champ de vecteurs du potentiel en 3")
 
 plt.show()
+
+
+
 
