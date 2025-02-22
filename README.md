@@ -32,10 +32,12 @@ Il faut tout diviser par la valeur du dernier element pour obtenir les coordonn�
 # Matrice de Pose au Formalisme Homogène
 
 ## Introduction
-En robotique et en vision par ordinateur, une **matrice de pose** est une matrice homogène utilisée pour représenter la transformation d'un repère à un autre. Elle combine **rotation** et **translation** dans un seul formalisme.
+En robotique et en vision par ordinateur, une **matrice de pose** est une transformation homogène utilisée pour décrire la position et l'orientation d'un repère par rapport à un autre. Elle combine **rotation** et **translation** dans une seule matrice.
+
+---
 
 ## Définition
-Une matrice de pose \( \mathbf{T} \) est une **matrice homogène** \( 4 \times 4 \) qui s’écrit sous la forme :
+Une matrice de pose \( \mathbf{T} \) est une **matrice homogène** \( 4 \times 4 \), définie comme :
 
 \[
 \mathbf{T} =
@@ -46,13 +48,18 @@ Une matrice de pose \( \mathbf{T} \) est une **matrice homogène** \( 4 \times 4
 \]
 
 où :
-- \( \mathbf{R} \in \mathbb{R}^{3 \times 3} \) est une matrice de **rotation**,
+- \( \mathbf{R} \in \mathbb{R}^{3 \times 3} \) est une **matrice de rotation**,
 - \( \mathbf{t} \in \mathbb{R}^{3 \times 1} \) est un **vecteur de translation**,
-- \( \mathbf{0}^{T} = [0\ 0\ 0] \) et \( 1 \) permettent d’étendre l’espace.
+- \( \mathbf{0}^{T} = [0\ 0\ 0] \) et \( 1 \) assurent l'extension homogène.
+
+---
 
 ## Propriétés
-- La matrice \( \mathbf{T} \) appartient au **groupe des transformations rigides** \( SE(3) \) (Special Euclidean group).
-- L'inverse de \( \mathbf{T} \) est donné par :
+### Appartenance au groupe \( SE(3) \)  
+La matrice \( \mathbf{T} \) fait partie du **groupe des transformations rigides** \( SE(3) \) (Special Euclidean group).
+
+### Inverse de \( \mathbf{T} \)  
+L'inverse d'une matrice homogène est donné par :
 
 \[
 \mathbf{T}^{-1} =
@@ -62,14 +69,11 @@ où :
 \end{bmatrix}
 \]
 
-## Application
-Une matrice homogène permet de transformer un point homogène \( \mathbf{p} \) dans un espace 3D :
+---
 
-\[
-\mathbf{p}' = \mathbf{T} \mathbf{p}
-\]
+## Application : Transformation d'un Point
 
-avec :
+Un **point homogène** \( \mathbf{p} \) en 3D est représenté comme :
 
 \[
 \mathbf{p} =
@@ -81,7 +85,13 @@ z \\
 \end{bmatrix}
 \]
 
-et 
+La transformation d'un point vers un nouveau repère s'écrit :
+
+\[
+\mathbf{p}' = \mathbf{T} \mathbf{p}
+\]
+
+avec :
 
 \[
 \mathbf{p}' =
@@ -93,13 +103,20 @@ z' \\
 \end{bmatrix}
 \]
 
-Cela permet de transformer les coordonnées d’un point d’un repère à un autre.
+---
 
 ## Conclusion
-Le formalisme homogène est **essentiel** en robotique et en vision pour manipuler les transformations rigides de manière **élégante et compacte**.
+Le formalisme homogène est **essentiel** pour manipuler les transformations rigides de manière **élégante et compacte** en **robotique** et **vision par ordinateur**.
 
+### Avantages :
+- Manipulation **facile** des transformations  
+- Regroupement **rotation + translation**  
+- Utilisation dans de nombreux **algorithmes 3D**  
 
+Utilisé en **SLAM, contrôle de robots, reconstruction 3D**, etc.
 
+---
 
-
-
+## Références  
+- Siciliano, B., & Khatib, O. (2016). *Springer Handbook of Robotics*  
+- Hartley, R., & Zisserman, A. (2003). *Multiple View Geometry in Computer Vision*  
