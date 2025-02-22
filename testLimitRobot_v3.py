@@ -94,7 +94,7 @@ Vz = np.zeros_like(X)  # Composante Z nulle (on reste dans un champ 2D)
 # Création de la figure 3D
 
 # Tracer les flèches en 3D
-ax.quiver(X, Y, np.zeros_like(X), Vx, Vy, Vz, color="grey", length=0.5, normalize=True)
+ax.quiver(X, Y, np.zeros_like(X)-2, Vx, Vy, Vz, color="grey", length=0.5, normalize=True)
 
 # Labels et titre
 ax.set_xlabel("x")
@@ -103,7 +103,4 @@ ax.set_zlabel("Potentiel")
 ax.set_title("Champ de vecteurs du potentiel en 3")
 
 plt.show()
-
-
-
 
