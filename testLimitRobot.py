@@ -81,14 +81,15 @@ for i in range(10):
     wTo = wMo_predict[:3, 3]
     print('ITER ',i, 'T', wTo, ' -ok ', iter, 'v = ', v)
     
-    alpha = 0.01
+    alpha = 0.1
     # tant qu'on rentre dans le mur, on ralentit
     iter = 0 
+    
     while np.abs(wTo[0])>xlim :
         iter += 1
         if iter > 100:
             break
-        v[0] = alpha*v[0] 
+        v = alpha*v 
         print('over limit x for ',i, 'T', wTo, ' - try reduce', iter, 'v = ', v)
         o2Mo_try = cld.homogeneous_from_twist(w, v, dt)
         wMo_predict = wMo @np.linalg.inv(o2Mo_try)
@@ -99,7 +100,7 @@ for i in range(10):
         iter += 1
         if iter > 100:
             break
-        v[1] = alpha*v[1] 
+        v=alpha*v 
         print('over limit y for ',i, 'T', wTo, ' - try reduce', iter, 'v = ', v)
         o2Mo_try = cld.homogeneous_from_twist(w, v, dt)
         wMo_predict = wMo @np.linalg.inv(o2Mo_try)
