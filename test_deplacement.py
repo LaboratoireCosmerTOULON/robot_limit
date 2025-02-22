@@ -9,23 +9,6 @@ import cldLib as cld
 
 # Création de la matrice de transformation
 wMo = cld.homogeneousMatrix(1, 0, 0, 45, 30, 60)  # Ex. rotation + translation
-# Points d'origine en coordonnées homogènes
-oO = np.array([0, 0, 0, 1])
-oX = np.array([1, 0, 0, 1])
-oY = np.array([0, 1, 0, 1])
-oZ = np.array([0, 0, 1, 1])
-
-# Application de la transformation
-cO = wMo @ oO
-cX = wMo @ oX
-cY = wMo @ oY
-cZ = wMo @ oZ
-
-print("Origine transformée:", cO)
-print("X transformé:", cX)
-print("Y transformé:", cY)
-print("Z transformé:", cZ)
-print("Matrice de transformation:\n", wMo)
 
 # ---- on definiti la vitesse de commande dans le repere du robot----#
 v0=np.array([1.0,0.0,0.0])
@@ -36,9 +19,9 @@ dt=1
 
 v=np.copy(v0)
 w=np.copy(w0)
-o2Mo = cld.homogeneous_from_twist(w, v, dt)
-print("Matrice homogène après intégration :\n", o2Mo)
-wMo2 = wMo @ np.linalg.inv(o2Mo)
+oMo2 = cld.homogeneous_from_twist(w, v, dt)
+print("Matrice homogène après intégration :\n", oMo2)
+wMo2 = wMo @ oMo2
 
 # Affichage du repère
 fig = plt.figure(1)
@@ -48,7 +31,7 @@ cld.frame(wMo2,1,ax)
 
 # on repete cette vitesse pendant 10 secondes
 for i in range(10):
-    wMo2 = wMo2 @ np.linalg.inv(o2Mo)
+    wMo2 = wMo2 @ oMo2
     cld.frame(wMo2, 1,ax )
     time.sleep(0.1)
 
