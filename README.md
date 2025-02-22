@@ -3,7 +3,10 @@ Method to avoid limit of the test area
 
 * cldLib est un fichier avec toute les fonctions.
 * Les autres fichiers sont des fichiers de test
-* * test_deplacement.py montre comment créer un repere a une position donnée et le déplacer avec une vitesse edocentrée
+  * test_deplacement.py montre comment créer un repere a une position donnée et le déplacer avec une vitesse edocentrée
+  * testLimitRobot_pot.py est un affichage des champ de potentiel lorsqu'on determine des limites simples sur x et y
+  * testLimitRobot.py montre deux manieres  de s'éloigner des butées avec des changements sur la vitesse vers la butée.
+  * testLimitRobot_v3.py est une utilisation des champs de potentiels pour déformer la vitesse
 
 # Method
 
