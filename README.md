@@ -1,9 +1,9 @@
 # robot_limit
 Method to avoid limit of the test area
 
-
-cldLib est un fichier avec toute les fonctions.
-Les autres fichiers sont des fichiers de test
+* cldLib est un fichier avec toute les fonctions.
+* Les autres fichiers sont des fichiers de test
+* * test_deplacement.py montre comment créer un repere a une position donnée et le déplacer avec une vitesse edocentrée
 
 # Method
 
