@@ -24,6 +24,10 @@ def matrix_to_translation_euler(T):
 
     return translation, np.array([euler_angles[2],euler_angles[1],euler_angles[0]])
 
+def quaternion_to_euler(quaternion):
+    euler_angles = R.from_quat(quaternion).as_euler('zyx', degrees=True)  # Yaw, Pitch, Roll en degrés
+    return np.array([euler_angles[2],euler_angles[1],euler_angles[0]]) # that's why ;-)
+
 def potentiel(x, y, xmin, xmax, ymin, ymax):
     """
     Calcule le potentiel en (x, y) et retourne un vecteur [Vx, Vy].
