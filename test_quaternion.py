@@ -21,7 +21,9 @@ r0_v_r0 = np.array([0.0,0.0,0.0])
 r0_w_r0 = np.array([0.0,0.0,10.0])
 
 # --- on deduit le deplacement du robot si on applique cette vitesse  pendant dt secondes---#
-dt=1
+dt=0.1
+
+#r1 est la destination du robot
 r0_M_r1 = cld.homogeneous_from_twist(r0_w_r0, r0_v_r0, dt)
 print(f"{r0_M_r1=}")
 r0_T_r1,r0_R_r1_euler = cld.matrix_to_translation_euler(r0_M_r1);
@@ -84,8 +86,7 @@ Kp = 0.5
 
 w_M_r2=np.copy(w_M_r0)
 
-# on repete cette vitesse pendant 10 secondes
-for i in range(20):
+for i in range(0):
     print("Claire")
       
     r2_M_r1 = np.linalg.inv(w_M_r2)@w_M_r1
@@ -134,8 +135,7 @@ seuil = 0.01
 
 w_M_r2=np.copy(w_M_r0)
 
-# on repete cette vitesse pendant 10 secondes
-for i in range(20):
+for i in range(10):
     print("Martin")
 
     w_T_r2, w_R_r2_quat = cld.matrix_to_translation_quaternion(w_M_r2)    
@@ -144,17 +144,35 @@ for i in range(20):
     epsilon_orientation = w_R_r1_quat * w_R_r2_quat.inverse()
     print( f"{epsilon_orientation=}" )
     
+    # dans le repere monde
+    
     epsilon_translation = w_T_r1 - w_T_r2
     print( f"{epsilon_translation=}" )
+    # Conversion de l'erreur de position dans le repère du robot
+    r2_R_w_quat = w_R_r2_quat.inverse()  # Rotation du monde vers le repère r2
+    epsilon_translation_robot_quat = quaternion(0, *epsilon_translation)
+    epsilon_translation_robot = r2_R_w_quat*epsilon_translation_robot_quat*r2_R_w_quat.inverse()  # Translation dans le repère robot
+    epsilon_translation_robot = np.array([epsilon_translation_robot_quat.x, epsilon_translation_robot_quat.y, epsilon_translation_robot_quat.z])
 
-    if np.linalg.norm(as_float_array(epsilon_orientation))<seuil and np.linalg.norm(epsilon_translation)<seuil : 
+    
+    epsilon_orientation_robot_quat = r2_R_w_quat*epsilon_orientation*r2_R_w_quat.inverse()   # Vecteur de rotation dans le repère robot
+    epsilon_orientation_robot = np.array([epsilon_orientation_robot_quat.x, epsilon_orientation_robot_quat.y, epsilon_orientation_robot_quat.z])
+    
+    print(f"{epsilon_orientation_robot=}")
+    print(f"{epsilon_translation_robot=}")
+   
+    
+
+    if np.linalg.norm(as_float_array(epsilon_orientation_robot))<seuil and np.linalg.norm(epsilon_translation_robot)<seuil : 
         print ( "STOP")
-        print (f"{np.linalg.norm(as_float_array(epsilon_orientation))}")
-        print (f"{np.linalg.norm(as_float_array(epsilon_translation))}")
+        print (f"{np.linalg.norm(as_float_array(epsilon_orientation_robot))}")
+        print (f"{np.linalg.norm(as_float_array(epsilon_translation_robot))}")
         break
    
-    v_commande = Kp*epsilon_translation
-    w_commande = Kp*np.array(as_float_array(epsilon_orientation)[1:])
+    v_commande = Kp*epsilon_translation_robot
+    w_commande = Kp*epsilon_orientation_robot
+    
+    
     print(f"{v_commande=}")
     print(f"{w_commande=}")
     r2_M_r1 = cld.homogeneous_from_twist(w_commande, v_commande, dt)
