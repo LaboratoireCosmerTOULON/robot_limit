@@ -2,10 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
 from scipy.linalg import expm  # Exponentielle de matrice
-
+import cldLib as cld
 import time
 from quaternion import as_float_array, quaternion
 
+
+def matrix_to_translation_utheta(r1_M_r0):
+    r1_T_r0, r1_R_r0_quat = cld.matrix_to_translation_quaternion(r1_M_r0)
+    r1_R_r0_u_theta = cld.quaternion_to_u_theta_vector(r1_R_r0_quat)
+    return r1_T_r0, r1_R_r0_u_theta
 
 # Function to convert quaternion to axis (u) and angle (theta) as a 4-element vector
 def quaternion_to_u_theta_vector(q):
@@ -25,7 +30,7 @@ def quaternion_to_u_theta_vector(q):
         u = np.array([1, 0, 0])  # Arbitrary axis if no rotation
     
     # Return the unit vector u and angle theta as a 4-element vector [u_x, u_y, u_z, theta]
-    return np.concatenate([u, np.array([theta])])
+    return theta*u
 
 # Example quaternions
 
