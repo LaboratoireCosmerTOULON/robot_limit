@@ -8,8 +8,8 @@ import cldLib as cld
 
 current_pose_vector_in_world = np.random.random( (6,) )
 
-linear_speed = np.random.random( (3,) )
-angular_speed = np.zeros( (3,) )
+linear_speed = np.array([1,2,2])#np.random.random( (3,) )
+angular_speed = np.array([0.0,0.0,0.2]) #np.zeros( (3,) )
 time_step = 0.1
 print( f"\n{'=' * 20} {'setup':^50} {'=' * 20}\n" )
 
@@ -64,15 +64,9 @@ print( f"{quaternion_next=}" )
 print( f"\n{'=' * 20} {'quaternions current to next':^50} {'=' * 20}\n" )
 
 # numpy quaternion is [w x y z] and scipy is [x y z w]
-quaternion_current_to_next = as_float_array(
-    quaternion( quaternion_next[ 3 ], *quaternion_next[ :3 ] ) * quaternion(
-        quaternion_current[ 3 ], *quaternion_current[ :3 ]
-        ).inverse()
-    )
-quaternion_current_to_next = np.array(
-    [ quaternion_current_to_next[ 1 ], quaternion_current_to_next[ 2 ], quaternion_current_to_next[ 3 ],
-      quaternion_current_to_next[ 0 ] ]
-    )
+#FIXME changer la fonction quaternion pour qu'elle prenne les valeurs dans l'ordre de numpy
+quaternion_current_to_next = quaternion_next * quaternion_current.inverse()
+
 translation_current_to_next = translation_next - translation_current
 
 print( f"{translation_current_to_next=}" )

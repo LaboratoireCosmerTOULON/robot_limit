@@ -2,7 +2,33 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
 from scipy.linalg import expm  # Exponentielle de matrice
+
 import time
+from quaternion import as_float_array, quaternion
+
+
+# Function to convert quaternion to axis (u) and angle (theta) as a 4-element vector
+def quaternion_to_u_theta_vector(q):
+    # Extract quaternion components
+    w, x, y, z = q.real, q.imag[0], q.imag[1], q.imag[2]
+    
+    # Compute the angle theta (radians)
+    theta = 2 * np.arccos(w)
+    
+    # Compute the unit vector u (axis of rotation)
+    sin_half_theta = np.sqrt(1 - w**2)
+    
+    # If sin_half_theta is zero, the quaternion represents no rotation
+    if sin_half_theta > 0:
+        u = np.array([x / sin_half_theta, y / sin_half_theta, z / sin_half_theta])
+    else:
+        u = np.array([1, 0, 0])  # Arbitrary axis if no rotation
+    
+    # Return the unit vector u and angle theta as a 4-element vector [u_x, u_y, u_z, theta]
+    return np.concatenate([u, np.array([theta])])
+
+# Example quaternions
+
 
 def matrix_to_translation_quaternion(T):
     # Extraire la translation
@@ -10,9 +36,10 @@ def matrix_to_translation_quaternion(T):
 
     # Extraire la rotation et convertir en quaternion
     rotation_matrix = T[:3, :3]
-    quaternion = R.from_matrix(rotation_matrix).as_quat()  # (x, y, z, w)
+    quat = R.from_matrix(rotation_matrix).as_quat(scalar_first=True)  # (x, y, z, w)
+    quat = quaternion(*quat)
 
-    return translation, quaternion
+    return translation, quat
 
 def matrix_to_translation_euler(T):
     # Extraire la translation
@@ -25,7 +52,7 @@ def matrix_to_translation_euler(T):
     return translation, np.array([euler_angles[2],euler_angles[1],euler_angles[0]])
 
 def quaternion_to_euler(quaternion):
-    euler_angles = R.from_quat(quaternion).as_euler('zyx', degrees=True)  # Yaw, Pitch, Roll en degrés
+    euler_angles = R.from_quat(as_float_array(quaternion), scalar_first=True).as_euler('zyx', degrees=True)  # Yaw, Pitch, Roll en degrés
     return np.array([euler_angles[2],euler_angles[1],euler_angles[0]]) # that's why ;-)
 
 def potentiel(x, y, xmin, xmax, ymin, ymax):
