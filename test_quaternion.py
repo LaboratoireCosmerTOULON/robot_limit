@@ -8,7 +8,7 @@ from quaternion import as_float_array, quaternion
 
 
 # Création de la matrice de transformation
-w_M_r0_pose = np.array([0, 0, 0, 30, 30, 0])
+w_M_r0_pose = np.array([0, 0, 0, 10, 10, 10])
 w_M_r0 = cld.homogeneousMatrix(*w_M_r0_pose)  # Ex. rotation + translation
 print("pose", w_M_r0_pose)
 print("Matrice de la pose :\n", w_M_r0)
@@ -17,11 +17,11 @@ w_T_r0, w_R_r0_euler = cld.matrix_to_translation_euler(w_M_r0);
 print("Translation et angles d'Euler :\n", w_T_r0,w_R_r0_euler)
 
 # ---- on definiti la vitesse de commande dans le repère du robot----#
-r0_v_r0 = np.array([1.0,2.0,0.5])
-r0_w_r0 = np.array([0.0,0.0,10.0])
+r0_v_r0 = np.array([1.0,0.0,0.5])
+r0_w_r0 = np.array([0.5,0.0,1])
 
 # --- on deduit le deplacement du robot si on applique cette vitesse  pendant dt secondes---#
-dt=0.1
+dt=1
 
 #r1 est la destination du robot
 r0_M_r1 = cld.homogeneous_from_twist(r0_w_r0, r0_v_r0, dt)
@@ -65,7 +65,8 @@ print("Quaternion : erreur en trans et quaternion :\n", r0_T_r1, r0_R_r1_quat)
 #######################
 
 
-
+# integration du deplacement du a la commande 
+dt = 0.1
 
 # erreur en pose
 r1_M_r0 = np.linalg.inv(w_M_r1)*w_M_r0
@@ -157,7 +158,7 @@ cld.frame(w_M_r0,1,ax)
 cld.frame(w_M_r1,1,ax)
 
 plt.ion()
-Kp = 3
+Kp = 0.5
 seuil = 0.01
 
 w_M_r2=np.copy(w_M_r0)
