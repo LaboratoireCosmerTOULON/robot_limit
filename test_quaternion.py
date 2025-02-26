@@ -17,7 +17,7 @@ w_T_r0, w_R_r0_euler = cld.matrix_to_translation_euler(w_M_r0);
 print("Translation et angles d'Euler :\n", w_T_r0,w_R_r0_euler)
 
 # ---- on definiti la vitesse de commande dans le repère du robot----#
-r0_v_r0 = np.array([0.0,0.0,0.0])
+r0_v_r0 = np.array([1.0,2.0,0.5])
 r0_w_r0 = np.array([0.0,0.0,10.0])
 
 # --- on deduit le deplacement du robot si on applique cette vitesse  pendant dt secondes---#
@@ -37,7 +37,7 @@ print("Translation et angles d'Euler apres mouvement :\n", w_T_r1,w_R_r1_euler)
 
 # Affichage du repère
 fig = plt.figure(1)
-ax = fig.add_subplot(131, projection='3d')
+ax = fig.add_subplot(231, projection='3d')
 cld.frame(w_M_r0,1,ax)
 cld.frame(w_M_r1,1,ax)
 #plt.show()
@@ -75,7 +75,7 @@ print("U, theta vector:", r1_R_r0_u_theta )
 
 # Affichage du repère
 fig = plt.figure(1)
-ax = fig.add_subplot(132, projection='3d')
+ax = fig.add_subplot(232, projection='3d')
 cld.frame(w_M_r0,1,ax)
 cld.frame(w_M_r1,1,ax)
 
@@ -86,7 +86,10 @@ Kp = 0.5
 
 w_M_r2=np.copy(w_M_r0)
 
-for i in range(0):
+v_log = []
+w_log = []
+
+for i in range(20):
     print("Claire")
       
     r2_M_r1 = np.linalg.inv(w_M_r2)@w_M_r1
@@ -110,8 +113,32 @@ for i in range(0):
     print(f"{w_commande=}")
     r2_M_r1 = cld.homogeneous_from_twist(w_commande, v_commande, dt)
     w_M_r2 = w_M_r2 @ r2_M_r1
+    
+    fig = plt.figure(1)
+    ax = fig.add_subplot(232, projection='3d')
     cld.frame(w_M_r2, 1,ax )
+    cld.frame(w_M_r1,1,ax)
     plt.pause(1)
+    
+    v_log.append(v_commande)
+    w_log.append(w_commande)
+    
+    ax = fig.add_subplot(235)
+    v_log_array = np.array(v_log)
+    w_log_array = np.array(w_log)
+    ax.plot(v_log_array[:,0], label='v_x')
+    ax.plot(v_log_array[:,1], label='v_y')
+    ax.plot(v_log_array[:,2], label='v_z')
+    ax.plot(w_log_array[:,0], label='w_x')
+    ax.plot(w_log_array[:,1], label='w_y')
+    ax.plot(w_log_array[:,2], label='w_z')        
+
+    #ax.legend() 
+    plt.show()
+
+
+
+
 
 
 
@@ -124,18 +151,22 @@ dt = 0.1
 
 # Affichage du repère
 fig = plt.figure(1)
-ax = fig.add_subplot(133, projection='3d')
+ax = fig.add_subplot(233, projection='3d')
 
 cld.frame(w_M_r0,1,ax)
 cld.frame(w_M_r1,1,ax)
 
 plt.ion()
-Kp = 1
+Kp = 3
 seuil = 0.01
 
 w_M_r2=np.copy(w_M_r0)
 
-for i in range(10):
+
+
+v_log = []
+w_log = []
+for i in range(20):
     print("Martin")
 
     w_T_r2, w_R_r2_quat = cld.matrix_to_translation_quaternion(w_M_r2)    
@@ -153,7 +184,6 @@ for i in range(10):
     epsilon_translation_robot_quat = quaternion(0, *epsilon_translation)
     epsilon_translation_robot = r2_R_w_quat*epsilon_translation_robot_quat*r2_R_w_quat.inverse()  # Translation dans le repère robot
     epsilon_translation_robot = np.array([epsilon_translation_robot_quat.x, epsilon_translation_robot_quat.y, epsilon_translation_robot_quat.z])
-
     
     epsilon_orientation_robot_quat = r2_R_w_quat*epsilon_orientation*r2_R_w_quat.inverse()   # Vecteur de rotation dans le repère robot
     epsilon_orientation_robot = np.array([epsilon_orientation_robot_quat.x, epsilon_orientation_robot_quat.y, epsilon_orientation_robot_quat.z])
@@ -161,7 +191,6 @@ for i in range(10):
     print(f"{epsilon_orientation_robot=}")
     print(f"{epsilon_translation_robot=}")
    
-    
 
     if np.linalg.norm(as_float_array(epsilon_orientation_robot))<seuil and np.linalg.norm(epsilon_translation_robot)<seuil : 
         print ( "STOP")
@@ -177,8 +206,28 @@ for i in range(10):
     print(f"{w_commande=}")
     r2_M_r1 = cld.homogeneous_from_twist(w_commande, v_commande, dt)
     w_M_r2 = w_M_r2 @ r2_M_r1
+    
+    fig = plt.figure(1)
+    ax = fig.add_subplot(233, projection='3d')
     cld.frame(w_M_r2, 1,ax )
+    cld.frame(w_M_r1,1,ax)
     plt.pause(1)
+    
+    v_log.append(v_commande)
+    w_log.append(w_commande)
+    
+    ax = fig.add_subplot(236)
+    v_log_array = np.array(v_log)
+    w_log_array = np.array(w_log)
+    ax.plot(v_log_array[:,0], label='v_x')
+    ax.plot(v_log_array[:,1], label='v_y')
+    ax.plot(v_log_array[:,2], label='v_z')
+    ax.plot(w_log_array[:,0], label='w_x')
+    ax.plot(w_log_array[:,1], label='w_y')
+    ax.plot(w_log_array[:,2], label='w_z')        
+
+    #ax.legend() 
+    plt.show()
     
 #plt.show()
 
